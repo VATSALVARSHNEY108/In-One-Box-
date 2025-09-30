@@ -29,7 +29,7 @@ def display_ai_assistant():
         st.session_state.ai_chat_messages = [
             {
                 "role": "assistant",
-                "content": "👋 **Hello! I'm your AI Assistant for the InOneBox toolkit.**\n\n*Created by Vatsal Varshney - AI/ML Engineer*\n\nI can help you:\n- 🔍 **Find specific tools** - Just tell me what you want to do\n- 🎯 **Navigate categories** - I'll guide you to the right section\n- 💡 **Get recommendations** - I'll suggest the best tools for your needs\n- 📚 **Learn about features** - Ask about any tool's capabilities\n- 👨‍💻 **Learn about the creator** - Check out Vatsal's portfolio!\n\n**What would you like to do today?**",
+                "content": "👋 **Hi! I'm Vatsal AI - Your Personal Toolkit Guide**\n\n*Powered by Google Gemini & created by Vatsal Varshney*\n\n**I'll help you find the perfect tool from our 500+ collection!**\n\nJust tell me what you need:\n- 🎨 \"I want to edit images\" → I'll show you Image Tools\n- 🤖 \"I need AI tools\" → I'll guide you to AI features\n- 📝 \"Help with text\" → I'll find Text Tools for you\n- 📊 \"Analyze data\" → I'll show Data Tools\n\n**💡 Try asking me anything below, or click a suggestion:**",
                 "suggestions": [
                     "Show me AI tools",
                     "I need to edit images",
@@ -54,8 +54,10 @@ def display_ai_assistant():
                         if st.button(suggestion, key=f"suggestion_{i}_{j}", use_container_width=True):
                             handle_user_input(suggestion)
 
-    # Chat input
-    if prompt := st.chat_input("Ask me anything about the tools or tell me what you want to do..."):
+    # Chat input with improved prompt
+    st.markdown("---")
+    st.markdown("### 💬 Ask Vatsal AI Assistant")
+    if prompt := st.chat_input("💡 What tool are you looking for? Ask me anything... (e.g., 'I need to resize images' or 'Show me AI tools')"):
         handle_user_input(prompt)
 
     st.markdown("</div>", unsafe_allow_html=True)
