@@ -286,8 +286,7 @@ class EnhancedRAG:
                 "content": "Live News Feed provides real-time news updates from multiple sources with customizable categories including technology, business, sports, health, entertainment, and science with auto-refresh capabilities.",
                 "tool_name": "Live News Feed",
                 "category": "news_tools",
-                "keywords": ["live news", "news feed", "real time news", "current news", "breaking news",
-                             "news updates", "latest news"],
+                "keywords": ["live news", "news feed", "real time news", "current news", "breaking news", "news updates", "latest news"],
                 "navigation_category": "News & Events Tools",
                 "navigation_tool": "Live News Feed",
                 "tool_description": "Get real-time news updates from multiple sources"
@@ -296,8 +295,7 @@ class EnhancedRAG:
                 "content": "Trending Topics discovers what's trending right now with viral news and popular stories across different time ranges from the last hour to the last week.",
                 "tool_name": "Trending Topics",
                 "category": "news_tools",
-                "keywords": ["trending", "viral news", "popular topics", "trending topics", "what's trending",
-                             "hot topics", "trending news"],
+                "keywords": ["trending", "viral news", "popular topics", "trending topics", "what's trending", "hot topics", "trending news"],
                 "navigation_category": "News & Events Tools",
                 "navigation_tool": "Trending Topics",
                 "tool_description": "Discover trending topics and viral news"
@@ -306,8 +304,7 @@ class EnhancedRAG:
                 "content": "Technology News provides the latest updates from the tech world including AI, machine learning, software development, hardware, startups, cybersecurity, and mobile technology.",
                 "tool_name": "Technology News",
                 "category": "news_tools",
-                "keywords": ["tech news", "technology news", "ai news", "software news", "startup news",
-                             "cybersecurity news", "mobile tech", "hardware news"],
+                "keywords": ["tech news", "technology news", "ai news", "software news", "startup news", "cybersecurity news", "mobile tech", "hardware news"],
                 "navigation_category": "News & Events Tools",
                 "navigation_tool": "Technology News",
                 "tool_description": "Latest technology and tech industry updates"
@@ -316,8 +313,7 @@ class EnhancedRAG:
                 "content": "News Sentiment Analysis analyzes the emotional tone of news articles and content, providing sentiment scores, confidence levels, and emotional indicators for news text.",
                 "tool_name": "News Sentiment Analysis",
                 "category": "news_tools",
-                "keywords": ["news sentiment", "news analysis", "sentiment analysis", "news tone", "emotional analysis",
-                             "news mood"],
+                "keywords": ["news sentiment", "news analysis", "sentiment analysis", "news tone", "emotional analysis", "news mood"],
                 "navigation_category": "News & Events Tools",
                 "navigation_tool": "News Sentiment Analysis",
                 "tool_description": "Analyze emotional tone and sentiment in news content"
@@ -326,8 +322,7 @@ class EnhancedRAG:
                 "content": "Keyword News Search allows searching for news articles using specific keywords with advanced filters for time period, language, source type, and sorting options.",
                 "tool_name": "Keyword News Search",
                 "category": "news_tools",
-                "keywords": ["search news", "news search", "keyword search", "find news", "news by keyword",
-                             "search articles"],
+                "keywords": ["search news", "news search", "keyword search", "find news", "news by keyword", "search articles"],
                 "navigation_category": "News & Events Tools",
                 "navigation_tool": "Keyword News Search",
                 "tool_description": "Search news articles using specific keywords"
@@ -336,8 +331,7 @@ class EnhancedRAG:
                 "content": "Weather Updates provides current weather conditions, forecasts, and weather alerts for any location worldwide with detailed weather information.",
                 "tool_name": "Weather Updates",
                 "category": "news_tools",
-                "keywords": ["weather", "weather forecast", "weather updates", "current weather", "weather alerts",
-                             "weather conditions"],
+                "keywords": ["weather", "weather forecast", "weather updates", "current weather", "weather alerts", "weather conditions"],
                 "navigation_category": "News & Events Tools",
                 "navigation_tool": "Weather Updates",
                 "tool_description": "Current weather conditions and forecasts"
@@ -346,8 +340,7 @@ class EnhancedRAG:
                 "content": "Fact Checker verifies claims and checks facts from news sources, providing verification status, supporting evidence, context, and important caveats for factual accuracy.",
                 "tool_name": "Fact Checker",
                 "category": "news_tools",
-                "keywords": ["fact check", "verify news", "check facts", "fact checker", "verify claims",
-                             "news verification", "truth check"],
+                "keywords": ["fact check", "verify news", "check facts", "fact checker", "verify claims", "news verification", "truth check"],
                 "navigation_category": "News & Events Tools",
                 "navigation_tool": "Fact Checker",
                 "tool_description": "Verify claims and check facts from news sources"
@@ -572,16 +565,16 @@ Response:"""
             # Create a web search prompt for Gemini
             web_search_prompt = f"""
             Please search for current, factual information about: {query}
-
+            
             Provide a comprehensive answer that includes:
             1. Key facts and current information
             2. Recent developments or updates if applicable
             3. Relevant statistics or data
             4. Important context or background
-
+            
             Focus on accuracy and include the most recent information available. 
             If you don't have current information, please indicate that.
-
+            
             Query: {query}
             """
 
@@ -653,28 +646,29 @@ Response:"""
                      'snippet': f'Web search for "{query}" - real-time results would appear here.',
                      'url': '#', 'source': 'Demo'}]
 
+
     def determine_search_strategy(self, query: str) -> str:
         """Determine whether to use web search, local knowledge, news search, or hybrid approach"""
         # News-specific indicators
-        news_indicators = ['news', 'breaking', 'headlines', 'trending', 'current events',
-                           'latest updates', 'what happened', 'recent developments', 'today news',
-                           'breaking news', 'news about', 'current news', 'latest news']
-
+        news_indicators = ['news', 'breaking', 'headlines', 'trending', 'current events', 
+                          'latest updates', 'what happened', 'recent developments', 'today news',
+                          'breaking news', 'news about', 'current news', 'latest news']
+        
         # Web search indicators
         web_indicators = ['current', 'latest', 'recent', 'today', 'now', 'this week', 'this month',
                           'what is happening', '2024', '2025', 'price', 'weather', 'update', 'status']
-
+        
         # Local knowledge indicators
-        local_indicators = ['how to', 'tool', 'inonebox', 'vatsal', 'navigate', 'find tool',
-                            'show me', 'help with', 'what tools', 'category', 'features']
+        local_indicators = ['how to', 'tool', 'inonebox', 'vatsal', 'navigate', 'find tool', 
+                           'show me', 'help with', 'what tools', 'category', 'features']
 
         query_lower = query.lower()
-
+        
         # Check for news-specific queries first
         news_score = sum(1 for indicator in news_indicators if indicator in query_lower)
         web_score = sum(1 for indicator in web_indicators if indicator in query_lower)
         local_score = sum(1 for indicator in local_indicators if indicator in query_lower)
-
+        
         # Determine strategy based on scores
         if news_score > 0 and news_score >= web_score:
             return 'news'
@@ -684,6 +678,7 @@ Response:"""
             return 'local'
         else:
             return 'hybrid'
+
 
     def search_news_with_gemini(self, query: str) -> Dict[str, Any]:
         """Search for real-time news using Gemini AI"""
@@ -695,20 +690,20 @@ Response:"""
             # Create news-specific search prompt
             news_search_prompt = f"""
             Please search for and provide current real-time news about: {query}
-
+            
             Focus on:
             1. Latest breaking news and headlines
             2. Recent developments and updates
             3. Current events and trending stories
             4. Key facts, dates, and specific details
             5. Recent announcements or changes
-
+            
             Provide structured information with:
             - Clear headlines
             - Key facts and details
             - Recent developments
             - Current status or ongoing situation
-
+            
             Prioritize accuracy and recency. Only include information you are confident is current.
             Query: {query}
             """
@@ -746,7 +741,7 @@ Response:"""
         # Get web/news results based on strategy
         web_results = []
         news_result = None
-
+        
         if strategy == 'news':
             # Prioritize news search for news-related queries
             news_result = self.search_news_with_gemini(query)
@@ -773,8 +768,9 @@ Response:"""
             "navigation_targets": self._get_navigation_targets(local_results)
         }
 
+
     def _generate_news_enhanced_response(self, query: str, local_context: str,
-                                         web_results: List[Dict], local_results: List[Dict], strategy: str) -> str:
+                                        web_results: List[Dict], local_results: List[Dict], strategy: str) -> str:
         """Generate response combining news search and local knowledge"""
         news_context = ""
         if web_results:
@@ -794,7 +790,7 @@ Response:"""
         # Build the prompt without nested f-strings
         local_knowledge_section = f"🛠️ **Local InOneBox Knowledge:**\n{local_context}\n" if local_context else ""
         strategy_section = f"🎯 **Strategy Used:** {strategy.title()} search approach" if strategy else ""
-
+        
         prompt = f"""You are an enhanced AI assistant with access to both local InOneBox knowledge and real-time news/web information.
 
 User Query: {query}
@@ -855,5 +851,15 @@ Response:"""
             return f"Based on your query '{query}', I found relevant information from both local tools and web sources. Please try being more specific for better results."
 
 
-# Global enhanced RAG instance
-enhanced_rag = EnhancedRAG()
+# Lazy-loaded enhanced RAG instance with caching
+@st.cache_resource(show_spinner=False)
+def get_enhanced_rag():
+    """Get or create the enhanced RAG instance (cached for performance)"""
+    return EnhancedRAG()
+
+# For backward compatibility, create a lazy wrapper
+class _LazyEnhancedRAG:
+    def __getattr__(self, name):
+        return getattr(get_enhanced_rag(), name)
+
+enhanced_rag = _LazyEnhancedRAG()
