@@ -53,33 +53,65 @@ def display_tool_grid(categories: Dict[str, Any]):
             with st.container():
                 # Create a clickable card button
                 if st.button(
-                        f"{info['icon']} {name}\n\n{info['description']}",
-                        key=f"cat_{i}",
-                        use_container_width=True,
-                        help=f"Click to open {name}"
+                    f"{info['icon']} {name}\n{info['description']}", 
+                    key=f"cat_{i}",
+                    use_container_width=True,
+                    help=f"Click to open {name}"
                 ):
                     st.session_state.selected_category = name
                     st.rerun()
-
+                
                 # Add custom styling for the card appearance
                 st.markdown(f"""
                 <style>
                     div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] {{
-                        border: 2px solid {info.get('color', '#FFFFFF')};
-                        border-radius: 10px;
-                        padding: 20px;
-                        min-height: 120px;
-                        background: linear-gradient(135deg, {info.get('background-color', '#000000')}20, {info.get('color', '#FFFFFF')}10);
+                        position: relative;
+                        display: block;
+                        text-align: left;
+                        white-space: pre-line;
+                        border-radius: 16px;
+                        border: 1px solid rgba(255, 255, 255, 0.18);
+                        padding: 28px;
+                        min-height: 220px;
+                        background: linear-gradient(135deg, {info.get('background-color', '#000000')}26, {info.get('color', '#FFFFFF')}14),
+                                    radial-gradient(1200px 200px at 0% 0%, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0));
+                        backdrop-filter: blur(8px) saturate(120%);
                         color: {info.get('color', '#FFFFFF')};
-                        font-size: 1.1rem;
-                        font-weight: 600;
-                        transition: all 0.3s ease;
-                        text-align: center;
+                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+                        transition: transform 0.25s ease, box-shadow 0.25s ease, background-position 0.6s ease;
+                        overflow: hidden;
+                        line-height: 1.4;
+                        font-size: 1rem;
+                        font-weight: 500;
+                        opacity: 0.95;
+                    }}
+                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] p::first-line {{
+                        font-size: 1.5rem;
+                        font-weight: 700;
+                        line-height: 1.2;
+                    }}
+                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] p::first-letter {{
+                        font-size: 2.8rem;
+                        line-height: 1;
+                        margin-right: 6px;
                     }}
                     div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"]:hover {{
-                        transform: translateY(-5px);
-                        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-                        border-color: {info.get('color', '#FFFFFF')};
+                        transform: translateY(-6px) scale(1.01);
+                        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
+                        opacity: 1;
+                        border-color: {info.get('color', '#FFFFFF')}40;
+                    }}
+                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"]:active {{
+                        transform: translateY(-2px) scale(0.998);
+                    }}
+                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"]:focus-visible {{
+                        outline: 3px solid {info.get('color', '#FFFFFF')};
+                        outline-offset: 2px;
+                    }}
+                    @media (prefers-reduced-motion: reduce) {{
+                        div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] {{
+                            transition: none !important;
+                        }}
                     }}
                 </style>
                 """, unsafe_allow_html=True)
@@ -350,7 +382,7 @@ def add_to_favorites(tool_name: str, category: str, module: str = ""):
         if fav['name'] == tool_name and fav['category'] == category:
             st.warning("Tool is already in favorites!")
             return False
-
+    
     favorite = {
         'id': str(uuid.uuid4()),
         'name': tool_name,
@@ -363,12 +395,11 @@ def add_to_favorites(tool_name: str, category: str, module: str = ""):
     show_success_message(f"Added {tool_name} to favorites!")
     return True
 
-
 def remove_from_favorites(tool_name: str, category: str):
     """Remove a tool from favorites"""
     original_length = len(st.session_state.favorites)
     st.session_state.favorites = [
-        fav for fav in st.session_state.favorites
+        fav for fav in st.session_state.favorites 
         if not (fav['name'] == tool_name and fav['category'] == category)
     ]
     if len(st.session_state.favorites) < original_length:
@@ -376,12 +407,10 @@ def remove_from_favorites(tool_name: str, category: str):
         return True
     return False
 
-
 def is_favorite(tool_name: str, category: str) -> bool:
     """Check if a tool is in favorites"""
-    return any(fav['name'] == tool_name and fav['category'] == category
-               for fav in st.session_state.favorites)
-
+    return any(fav['name'] == tool_name and fav['category'] == category 
+              for fav in st.session_state.favorites)
 
 def update_favorite_usage(tool_name: str, category: str):
     """Update usage count for a favorite tool"""
@@ -390,7 +419,6 @@ def update_favorite_usage(tool_name: str, category: str):
             fav['usage_count'] = fav.get('usage_count', 0) + 1
             fav['last_used'] = int(time.time())
             break
-
 
 def save_to_favorites(tool_name: str, settings: Dict[str, Any]):
     """Save tool configuration to favorites (legacy function for backward compatibility)"""
@@ -409,19 +437,19 @@ def display_favorites_section():
     if not st.session_state.favorites:
         st.info("🌟 No favorite tools yet. Start by adding tools to your favorites for quick access!")
         return
-
+    
     st.subheader("⭐ Your Favorite Tools")
-
+    
     # Sort favorites by usage count and last used
-    sorted_favorites = sorted(st.session_state.favorites,
-                              key=lambda x: (x.get('usage_count', 0), x.get('last_used', x['timestamp'])),
-                              reverse=True)
-
+    sorted_favorites = sorted(st.session_state.favorites, 
+                            key=lambda x: (x.get('usage_count', 0), x.get('last_used', x['timestamp'])), 
+                            reverse=True)
+    
     # Display in a grid layout
     cols_per_row = 3
     for i in range(0, len(sorted_favorites), cols_per_row):
         cols = st.columns(cols_per_row)
-        for j, fav in enumerate(sorted_favorites[i:i + cols_per_row]):
+        for j, fav in enumerate(sorted_favorites[i:i+cols_per_row]):
             with cols[j]:
                 with st.container():
                     # Tool card with gradient background
@@ -443,7 +471,7 @@ def display_favorites_section():
                         </p>
                     </div>
                     """, unsafe_allow_html=True)
-
+                    
                     col1, col2 = st.columns([2, 1])
                     with col1:
                         if st.button(f"Open", key=f"open_fav_{fav['id']}", use_container_width=True):
@@ -454,15 +482,14 @@ def display_favorites_section():
                             remove_from_favorites(fav['name'], fav['category'])
                             st.rerun()
 
-
 def display_recent_tools_section():
     """Display recent tools section in the dashboard"""
     if not st.session_state.recent_tools:
         st.info("🕒 No recent tools. Your recently used tools will appear here.")
         return
-
+    
     st.subheader("🕒 Recently Used Tools")
-
+    
     # Display recent tools in a horizontal layout
     cols = st.columns(min(5, len(st.session_state.recent_tools)))
     for i, tool_name in enumerate(st.session_state.recent_tools[-5:]):  # Show last 5 tools
@@ -479,11 +506,10 @@ def display_recent_tools_section():
             </div>
             """, unsafe_allow_html=True)
 
-
 def create_favorite_button(tool_name: str, category: str, module: str = ""):
     """Create a favorite/unfavorite button for any tool"""
     is_fav = is_favorite(tool_name, category)
-
+    
     if is_fav:
         if st.button("💔 Remove from Favorites", key=f"unfav_{tool_name}_{category}", type="secondary"):
             remove_from_favorites(tool_name, category)
@@ -492,7 +518,6 @@ def create_favorite_button(tool_name: str, category: str, module: str = ""):
         if st.button("⭐ Add to Favorites", key=f"fav_{tool_name}_{category}", type="primary"):
             add_to_favorites(tool_name, category, module)
             st.rerun()
-
 
 def load_from_favorites():
     """Load and display favorite configurations (legacy function)"""
