@@ -10,16 +10,8 @@ project_root = Path(__file__).parent.absolute()
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
-from connect import display_connect_page
-from ai_assistant import display_ai_assistant
 from utils.common import (init_session_state, display_tool_grid, search_tools, navigate_to_tool, 
                          get_search_suggestions, display_favorites_section, display_recent_tools_section)
-from tools import (
-    ai_tools, text_tools, image_tools, security_tools, css_tools, coding_tools,
-    audio_video_tools, file_tools, social_media_tools,
-    color_tools, web_dev_tools, seo_marketing_tools, data_tools,
-    science_math_tools, news_tools
-)
 
 # Configure page
 st.set_page_config(
@@ -32,41 +24,53 @@ st.set_page_config(
 # Initialize session state
 init_session_state()
 
-# Tool categories configuration
+# Tool categories configuration with lazy loading
 TOOL_CATEGORIES = {
-    "AI Tools": {"icon": "🤖", "description": "Artificial intelligence and machine learning tools", "module": ai_tools,
+    "AI Tools": {"icon": "🤖", "description": "Artificial intelligence and machine learning tools", "module": "ai_tools",
                  "color": "#FFFFFF", "background-color": "#000000"},
-    "Audio/Video Tools": {"icon": "🎵", "description": "Media processing and editing tools", "module": audio_video_tools,
+    "Audio/Video Tools": {"icon": "🎵", "description": "Media processing and editing tools", "module": "audio_video_tools",
                           "color": "#FFFFFF", "background-color": "#000000"},
-    "Coding Tools": {"icon": "💻", "description": "Programming utilities and development tools", "module": coding_tools,
+    "Coding Tools": {"icon": "💻", "description": "Programming utilities and development tools", "module": "coding_tools",
                      "color": "#FFFFFF", "background-color": "#000000"},
-    "Color Tools": {"icon": "🌈", "description": "Color palettes, converters, and design tools", "module": color_tools,
+    "Color Tools": {"icon": "🌈", "description": "Color palettes, converters, and design tools", "module": "color_tools",
                     "color": "#FFFFFF", "background-color": "#000000"},
-    "CSS Tools": {"icon": "🎨", "description": "CSS generators, validators, and design tools", "module": css_tools,
+    "CSS Tools": {"icon": "🎨", "description": "CSS generators, validators, and design tools", "module": "css_tools",
                   "color": "#FFFFFF", "background-color": "#000000"},
-    "Data Tools": {"icon": "📊", "description": "Data analysis and visualization tools", "module": data_tools,
+    "Data Tools": {"icon": "📊", "description": "Data analysis and visualization tools", "module": "data_tools",
                    "color": "#FFFFFF", "background-color": "#000000"},
-    "File Tools": {"icon": "📁", "description": "File management and conversion utilities", "module": file_tools,
+    "File Tools": {"icon": "📁", "description": "File management and conversion utilities", "module": "file_tools",
                    "color": "#FFFFFF", "background-color": "#000000"},
-    "Image Tools": {"icon": "🖼️", "description": "Image editing, conversion, and analysis tools", "module": image_tools,
+    "Image Tools": {"icon": "🖼️", "description": "Image editing, conversion, and analysis tools", "module": "image_tools",
                     "color": "#FFFFFF", "background-color": "#000000"},
     "Science/Math Tools": {"icon": "🧮", "description": "Scientific calculators and mathematical tools",
-                           "module": science_math_tools, "color": "#FFFFFF", "background-color": "#000000"},
+                           "module": "science_math_tools", "color": "#FFFFFF", "background-color": "#000000"},
     "Security/Privacy Tools": {"icon": "🔒", "description": "Cybersecurity, privacy, and encryption tools",
-                               "module": security_tools, "color": "#FFFFFF", "background-color": "#000000"},
+                               "module": "security_tools", "color": "#FFFFFF", "background-color": "#000000"},
     "Social Media Tools": {"icon": "📱", "description": "Social media management and analytics",
-                           "module": social_media_tools, "color": "#FFFFFF", "background-color": "#000000"},
+                           "module": "social_media_tools", "color": "#FFFFFF", "background-color": "#000000"},
     "SEO/Marketing Tools": {"icon": "📈", "description": "Search optimization and marketing analytics",
-                            "module": seo_marketing_tools, "color": "#FFFFFF", "background-color": "#000000"},
+                            "module": "seo_marketing_tools", "color": "#FFFFFF", "background-color": "#000000"},
     "Text Tools": {"icon": "📝", "description": "Text processing, analysis, and manipulation tools",
-                   "module": text_tools, "color": "#FFFFFF", "background-color": "#000000"},
+                   "module": "text_tools", "color": "#FFFFFF", "background-color": "#000000"},
     "Web Developer Tools": {"icon": "🌐", "description": "Web development and testing utilities",
-                            "module": web_dev_tools, "color": "#FFFFFF", "background-color": "#000000"},
+                            "module": "web_dev_tools", "color": "#FFFFFF", "background-color": "#000000"},
     "News & Events Tools": {"icon": "📰", "description": "Real-time news, events, and current updates",
-                           "module": news_tools, "color": "#FFFFFF", "background-color": "#000000"},
-    "Portfolio": {"icon": "📁", "description": "Portfolio and project showcase", "module": web_dev_tools,
+                           "module": "news_tools", "color": "#FFFFFF", "background-color": "#000000"},
+    "Portfolio": {"icon": "📁", "description": "Portfolio and project showcase", "module": "connect",
                   "color": "#FFFFFF", "background-color": "#000000"}
 }
+
+def lazy_import_module(module_name):
+    """Lazy import modules only when needed"""
+    if module_name == "connect":
+        from connect import display_connect_page
+        return type('obj', (object,), {'display_tools': display_connect_page})()
+    elif module_name == "ai_assistant":
+        from ai_assistant import display_ai_assistant  
+        return type('obj', (object,), {'display_tools': display_ai_assistant})()
+    else:
+        import importlib
+        return importlib.import_module(f'tools.{module_name}')
 
 
 def main():
@@ -156,12 +160,15 @@ def main():
     # Main content with better spacing
     if selected_category == "Portfolio":
         with st.container():
+            from connect import display_connect_page
             display_connect_page()
     elif selected_category == "Admin Feedback":
         with st.container():
+            from ai_assistant import display_ai_assistant
             display_ai_assistant()
     elif selected_category == "AI Assistant":
         with st.container():
+            from ai_assistant import display_ai_assistant
             display_ai_assistant()
     elif selected_category == "Dashboard" or 'selected_category' not in st.session_state:
         # Welcome banner with better design
@@ -212,7 +219,8 @@ def main():
                        unsafe_allow_html=True)
             st.markdown("<div style='padding: 1rem 0;'></div>", unsafe_allow_html=True)
             try:
-                category_info['module'].display_tools()
+                module = lazy_import_module(category_info['module'])
+                module.display_tools()
             except Exception as e:
                 st.error(f"⚠️ Unable to load {st.session_state.selected_category}")
                 st.info("💡 Try refreshing the page or selecting a different category")
