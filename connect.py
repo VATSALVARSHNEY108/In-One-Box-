@@ -7,6 +7,23 @@ import base64
 import psycopg2
 from psycopg2.extras import RealDictCursor
 
+@st.cache_data(show_spinner=False)
+def get_profile_image_path(dir_mtime=None):
+    """Get profile image path with caching (cache invalidates when directory changes)"""
+    portfolio_dir = "attached_assets"
+    if os.path.exists(portfolio_dir):
+        profile_images = [f for f in os.listdir(portfolio_dir)
+                          if f.lower().startswith('profile') and f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+        if profile_images:
+            return os.path.join(portfolio_dir, profile_images[0])
+    return None
+
+def get_cached_profile_image_path():
+    """Get profile image path with automatic cache invalidation on directory changes"""
+    portfolio_dir = "attached_assets"
+    dir_mtime = os.path.getmtime(portfolio_dir) if os.path.exists(portfolio_dir) else 0
+    return get_profile_image_path(dir_mtime)
+
 def display_connect_page():
     """Display the Portfolio page with all content in one place"""
     # Portfolio page header
@@ -38,15 +55,8 @@ def display_complete_portfolio():
         # Profile image section
         st.markdown("### 📸 Profile Photo")
 
-        # Check if profile image exists
-        profile_image_path = None
-        portfolio_dir = "attached_assets"
-        if os.path.exists(portfolio_dir):
-            # Look for profile image (you can upload one)
-            profile_images = [f for f in os.listdir(portfolio_dir)
-                              if f.lower().startswith('profile') and f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-            if profile_images:
-                profile_image_path = os.path.join(portfolio_dir, profile_images[0])
+        # Get cached profile image path
+        profile_image_path = get_cached_profile_image_path()
 
         if profile_image_path and os.path.exists(profile_image_path):
             try:
@@ -296,15 +306,8 @@ def display_profile_section():
         # Profile image section
         st.markdown("### 📸 Profile Photo")
 
-        # Check if profile image exists
-        profile_image_path = None
-        portfolio_dir = "attached_assets"
-        if os.path.exists(portfolio_dir):
-            # Look for profile image (you can upload one)
-            profile_images = [f for f in os.listdir(portfolio_dir)
-                              if f.lower().startswith('profile') and f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-            if profile_images:
-                profile_image_path = os.path.join(portfolio_dir, profile_images[0])
+        # Get cached profile image path
+        profile_image_path = get_cached_profile_image_path()
 
         if profile_image_path and os.path.exists(profile_image_path):
             try:
