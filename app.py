@@ -105,10 +105,12 @@ def main():
             button_col1, button_col2 = st.columns(2)
             with button_col1:
                 if st.button("Vatsal Your Assistant", type="primary", use_container_width=True):
-                    selected_category = "AI Assistant"
+                    st.session_state.selected_category = "AI Assistant"
+                    st.rerun()
             with button_col2:
                 if st.button("📁 Portfolio", type="secondary", use_container_width=True):
-                    selected_category = "Portfolio"
+                    st.session_state.selected_category = "Portfolio"
+                    st.rerun()
     
     # Category selector with cleaner design
     selected_category = st.selectbox(
