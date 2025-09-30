@@ -12,8 +12,8 @@ if str(project_root) not in sys.path:
 
 from connect import display_connect_page
 from ai_assistant import display_ai_assistant
-from utils.common import (init_session_state, display_tool_grid, search_tools, navigate_to_tool,
-                          get_search_suggestions, display_favorites_section, display_recent_tools_section)
+from utils.common import (init_session_state, display_tool_grid, search_tools, navigate_to_tool, 
+                         get_search_suggestions, display_favorites_section, display_recent_tools_section)
 from tools import (
     ai_tools, text_tools, image_tools, security_tools, css_tools, coding_tools,
     audio_video_tools, file_tools, social_media_tools,
@@ -63,47 +63,59 @@ TOOL_CATEGORIES = {
     "Web Developer Tools": {"icon": "🌐", "description": "Web development and testing utilities",
                             "module": web_dev_tools, "color": "#FFFFFF", "background-color": "#000000"},
     "News & Events Tools": {"icon": "📰", "description": "Real-time news, events, and current updates",
-                            "module": news_tools, "color": "#FFFFFF", "background-color": "#000000"},
+                           "module": news_tools, "color": "#FFFFFF", "background-color": "#000000"},
     "Portfolio": {"icon": "📁", "description": "Portfolio and project showcase", "module": web_dev_tools,
                   "color": "#FFFFFF", "background-color": "#000000"}
 }
 
 
 def main():
-    # Header
-    st.markdown("""
-    <div style="text-align: center; margin-bottom: 2rem;">
-        <h1>🛠️ In One Box </h1>
-        <p>वत्सल वार्ष्णेय</p>
-        <div style="background: linear-gradient(45deg, #a8c8ff, #c4a7ff); 
-                    -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-                    background-clip: text; font-size: 1.1rem; font-weight: 500; line-height: 1.6;">
-            A comprehensive digital workspace that brings together essential tools for developers, designers, content creators, and professionals. From AI-powered assistance and image editing to security analysis and data visualization, this platform streamlines your workflow by providing specialized tools across 14+ categories - all accessible from one convenient location.
+    # Header with better spacing
+    st.markdown("<div style='padding: 2rem 0 1rem 0;'></div>", unsafe_allow_html=True)
+    
+    col_left, col_center, col_right = st.columns([1, 3, 1])
+    with col_center:
+        st.markdown("""
+        <div style="text-align: center;">
+            <h1 style="font-size: 3rem; margin-bottom: 0.5rem; font-weight: 700;">🛠️ In One Box</h1>
+            <p style="font-size: 1rem; opacity: 0.8; margin-bottom: 1rem;">वत्सल वार्ष्णेय</p>
+            <p style="font-size: 1.1rem; line-height: 1.6; opacity: 0.9; max-width: 800px; margin: 0 auto;">
+                A comprehensive digital workspace that brings together essential tools for developers, designers, 
+                content creators, and professionals. Access 500+ Tools of specialized tools - all from one place.
+            </p>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
-
-    nav_col1, nav_col2, nav_col3, nav_col4 = st.columns([3, 3, 2, 2])
-    with nav_col1:
-        search_query = st.text_input("🔍 Search Tools", placeholder="Type to search...", key="search_tools")
-        search_filter = "All"
-    with nav_col2:
-        selected_category = st.selectbox(
-            "🎯 Select Category",
-            ["Dashboard", "AI Assistant", "Admin Feedback"] + list(TOOL_CATEGORIES.keys()),
-            index=0 if 'selected_category' not in st.session_state else
-            (["Dashboard", "AI Assistant", "Admin Feedback"] + list(TOOL_CATEGORIES.keys())).index(
-                st.session_state.selected_category) if st.session_state.selected_category in (
-                    ["Dashboard", "AI Assistant", "Admin Feedback"] + list(TOOL_CATEGORIES.keys())) else 0
-        )
-    with nav_col3:
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("Vatsal Your Assistant", type="primary", use_container_width=True):
-            selected_category = "AI Assistant"
-    with nav_col4:
-        st.markdown("<br>", unsafe_allow_html=True)
-        if st.button("👉Portfolio👈", type="secondary", use_container_width=True):
-            selected_category = "Portfolio"
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<div style='padding: 1.5rem 0;'></div>", unsafe_allow_html=True)
+    
+    # Navigation with better layout
+    with st.container():
+        nav_col1, nav_col2 = st.columns([3, 1])
+        
+        with nav_col1:
+            search_query = st.text_input("🔍 Search Tools", placeholder="Type to search for tools...", 
+                                        key="search_tools", label_visibility="collapsed")
+            search_filter = "All"
+        
+        with nav_col2:
+            button_col1, button_col2 = st.columns(2)
+            with button_col1:
+                if st.button("Vatsal Your Assistant", type="primary", use_container_width=True):
+                    selected_category = "AI Assistant"
+            with button_col2:
+                if st.button("📁 Portfolio", type="secondary", use_container_width=True):
+                    selected_category = "Portfolio"
+    
+    # Category selector with cleaner design
+    selected_category = st.selectbox(
+        "Select a category to explore",
+        ["Dashboard", "AI Assistant", "Admin Feedback"] + list(TOOL_CATEGORIES.keys()),
+        index=0 if 'selected_category' not in st.session_state else
+        (["Dashboard", "AI Assistant", "Admin Feedback"] + list(TOOL_CATEGORIES.keys())).index(
+            st.session_state.selected_category) if st.session_state.selected_category in (
+                ["Dashboard", "AI Assistant", "Admin Feedback"] + list(TOOL_CATEGORIES.keys())) else 0,
+        label_visibility="collapsed"
+    )
 
     # Search functionality
     if search_query:
@@ -139,56 +151,73 @@ def main():
     if selected_category != "Dashboard":
         st.session_state.selected_category = selected_category
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown("<div style='padding: 1rem 0;'></div>", unsafe_allow_html=True)
 
-    # Main content
+    # Main content with better spacing
     if selected_category == "Portfolio":
-        display_connect_page()
+        with st.container():
+            display_connect_page()
     elif selected_category == "Admin Feedback":
-        display_ai_assistant()
+        with st.container():
+            display_ai_assistant()
     elif selected_category == "AI Assistant":
-        display_ai_assistant()
+        with st.container():
+            display_ai_assistant()
     elif selected_category == "Dashboard" or 'selected_category' not in st.session_state:
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, rgba(168, 200, 255, 0.2), rgba(196, 167, 255, 0.2)); 
-                    color: white; padding: 1.5rem; border-radius: 15px; 
-                    margin: 1rem 0; text-align: center;
-                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);">
-            <h3 style="margin: 0; color: white;">✨ Welcome to the Ultimate Digital Toolkit! ✨</h3>
-            <p style="margin: 0.5rem 0 0 0; opacity: 0.9;">Select a category from the sidebar or click on any tool category below to get started.</p>
-        </div>
-        """, unsafe_allow_html=True)
-
-        # Display favorites and recent tools sections
-        col1, col2 = st.columns([1, 1])
-
-        with col1:
-            display_favorites_section()
-
-        with col2:
-            display_recent_tools_section()
-
-        st.markdown("---")
-
-        # Display tool categories
-        st.markdown("## 🛠️ Tool Categories")
-        display_tool_grid(TOOL_CATEGORIES)
+        # Welcome banner with better design
+        with st.container():
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, rgba(168, 200, 255, 0.15), rgba(196, 167, 255, 0.15)); 
+                        padding: 2rem; border-radius: 12px; margin: 1rem 0 2rem 0; text-align: center;
+                        border: 1px solid rgba(255, 255, 255, 0.1);">
+                <h2 style="margin: 0 0 0.5rem 0;">✨ Welcome to Your Digital Toolkit</h2>
+                <p style="margin: 0; opacity: 0.85; font-size: 1.05rem;">
+                    Select a category below to explore specialized tools designed for your workflow
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
+        
+        # Favorites and recent tools with better spacing
+        with st.container():
+            col1, col2 = st.columns(2, gap="large")
+            
+            with col1:
+                display_favorites_section()
+                
+            with col2:
+                display_recent_tools_section()
+        
+        st.markdown("<div style='padding: 2rem 0 1rem 0;'></div>", unsafe_allow_html=True)
+        
+        # Tool categories section
+        with st.container():
+            st.markdown("<h2 style='text-align: center; margin-bottom: 2rem;'>🛠️ Explore Tool Categories</h2>", 
+                       unsafe_allow_html=True)
+            display_tool_grid(TOOL_CATEGORIES)
     else:
-        # Back button for tool categories
-        if st.button("← Back to Dashboard", type="secondary"):
-            if 'selected_category' in st.session_state:
-                del st.session_state.selected_category
-            st.rerun()
+        # Back button with better styling
+        col1, col2, col3 = st.columns([2, 6, 2])
+        with col1:
+            if st.button("← Dashboard", type="secondary", use_container_width=True):
+                if 'selected_category' in st.session_state:
+                    del st.session_state.selected_category
+                st.rerun()
 
-        st.markdown("---")
+        st.markdown("<div style='padding: 1rem 0;'></div>", unsafe_allow_html=True)
 
-        category_info = TOOL_CATEGORIES[st.session_state.selected_category]
-        st.header(f"{category_info['icon']} {st.session_state.selected_category}")
-        try:
-            category_info['module'].display_tools()
-        except Exception as e:
-            st.error(f"Error loading {st.session_state.selected_category}: {str(e)}")
-            st.info("Please try refreshing the page or selecting a different category.")
+        # Category content with better container
+        with st.container():
+            category_info = TOOL_CATEGORIES[st.session_state.selected_category]
+            st.markdown(f"<h1 style='text-align: center;'>{category_info['icon']} {st.session_state.selected_category}</h1>", 
+                       unsafe_allow_html=True)
+            st.markdown("<div style='padding: 1rem 0;'></div>", unsafe_allow_html=True)
+            try:
+                category_info['module'].display_tools()
+            except Exception as e:
+                st.error(f"⚠️ Unable to load {st.session_state.selected_category}")
+                st.info("💡 Try refreshing the page or selecting a different category")
+                with st.expander("Technical Details"):
+                    st.code(str(e))
 
 
 if __name__ == "__main__":
