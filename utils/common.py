@@ -46,30 +46,43 @@ def add_to_history(operation: str, details: Dict[str, Any]):
 
 
 def display_tool_grid(categories: Dict[str, Any]):
-    """Display tool categories in a grid layout"""
+    """Display tool categories in a grid layout with clickable cards"""
     cols = st.columns(3)
     for i, (name, info) in enumerate(categories.items()):
         with cols[i % 3]:
             with st.container():
-                st.markdown(f"""
-                <div style="
-                    border: 2px solid {info['color']};
-                    border-radius: 10px;
-                    padding: 20px;
-                    margin: 10px 0;
-                    text-align: center;
-                    background-color: {info['color']}20;
-                    cursor: pointer;
-                ">
-                    <h3 style="margin: 0; color: {info['color']};">
-                        {info['icon']} {name}
-                    </h3>
-                </div>
-                """, unsafe_allow_html=True)
-
-                if st.button(f"Open {name}", key=f"cat_{i}"):
+                # Create a clickable card button
+                if st.button(
+                        f"{info['icon']} {name}\n\n{info['description']}",
+                        key=f"cat_{i}",
+                        use_container_width=True,
+                        help=f"Click to open {name}"
+                ):
                     st.session_state.selected_category = name
                     st.rerun()
+
+                # Add custom styling for the card appearance
+                st.markdown(f"""
+                <style>
+                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] {{
+                        border: 2px solid {info.get('color', '#FFFFFF')};
+                        border-radius: 10px;
+                        padding: 20px;
+                        min-height: 120px;
+                        background: linear-gradient(135deg, {info.get('background-color', '#000000')}20, {info.get('color', '#FFFFFF')}10);
+                        color: {info.get('color', '#FFFFFF')};
+                        font-size: 1.1rem;
+                        font-weight: 600;
+                        transition: all 0.3s ease;
+                        text-align: center;
+                    }}
+                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"]:hover {{
+                        transform: translateY(-5px);
+                        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+                        border-color: {info.get('color', '#FFFFFF')};
+                    }}
+                </style>
+                """, unsafe_allow_html=True)
 
 
 def build_tool_index():
