@@ -47,6 +47,63 @@ def add_to_history(operation: str, details: Dict[str, Any]):
 
 def display_tool_grid(categories: Dict[str, Any]):
     """Display tool categories in a grid layout with clickable cards"""
+    # Add consolidated CSS once for all cards
+    st.markdown("""
+    <style>
+        .tool-card-grid button[kind="secondary"] {
+            position: relative;
+            display: block;
+            text-align: left;
+            white-space: pre-line;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            padding: 28px;
+            min-height: 220px;
+            background: linear-gradient(135deg, rgba(0, 0, 0, 0.26), rgba(255, 255, 255, 0.14)),
+                        radial-gradient(1200px 200px at 0% 0%, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0));
+            backdrop-filter: blur(8px) saturate(120%);
+            color: #FAFAFA;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            overflow: hidden;
+            line-height: 1.4;
+            font-size: 1rem;
+            font-weight: 500;
+            opacity: 0.95;
+        }
+        .tool-card-grid button[kind="secondary"] p::first-line {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .tool-card-grid button[kind="secondary"] p::first-letter {
+            font-size: 2.8rem;
+            line-height: 1;
+            margin-right: 6px;
+        }
+        .tool-card-grid button[kind="secondary"]:hover {
+            transform: translateY(-6px) scale(1.01);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
+            opacity: 1;
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+        .tool-card-grid button[kind="secondary"]:active {
+            transform: translateY(-2px) scale(0.998);
+        }
+        .tool-card-grid button[kind="secondary"]:focus-visible {
+            outline: 3px solid rgba(255, 255, 255, 0.8);
+            outline-offset: 2px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .tool-card-grid button[kind="secondary"] {
+                transition: none !important;
+            }
+        }
+    </style>
+    """, unsafe_allow_html=True)
+    
+    # Wrap grid in a container with class
+    st.markdown('<div class="tool-card-grid">', unsafe_allow_html=True)
     cols = st.columns(3)
     for i, (name, info) in enumerate(categories.items()):
         with cols[i % 3]:
@@ -60,124 +117,68 @@ def display_tool_grid(categories: Dict[str, Any]):
                 ):
                     st.session_state.selected_category = name
                     st.rerun()
-                
-                # Add custom styling for the card appearance
-                st.markdown(f"""
-                <style>
-                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] {{
-                        position: relative;
-                        display: block;
-                        text-align: left;
-                        white-space: pre-line;
-                        border-radius: 16px;
-                        border: 1px solid rgba(255, 255, 255, 0.18);
-                        padding: 28px;
-                        min-height: 220px;
-                        background: linear-gradient(135deg, {info.get('background-color', '#000000')}26, {info.get('color', '#FFFFFF')}14),
-                                    radial-gradient(1200px 200px at 0% 0%, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0));
-                        backdrop-filter: blur(8px) saturate(120%);
-                        color: {info.get('color', '#FFFFFF')};
-                        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 4px 12px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
-                        transition: transform 0.25s ease, box-shadow 0.25s ease, background-position 0.6s ease;
-                        overflow: hidden;
-                        line-height: 1.4;
-                        font-size: 1rem;
-                        font-weight: 500;
-                        opacity: 0.95;
-                    }}
-                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] p::first-line {{
-                        font-size: 1.5rem;
-                        font-weight: 700;
-                        line-height: 1.2;
-                    }}
-                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] p::first-letter {{
-                        font-size: 2.8rem;
-                        line-height: 1;
-                        margin-right: 6px;
-                    }}
-                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"]:hover {{
-                        transform: translateY(-6px) scale(1.01);
-                        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5), 0 8px 20px rgba(0, 0, 0, 0.35), 0 4px 12px rgba(0, 0, 0, 0.25);
-                        opacity: 1;
-                        border-color: {info.get('color', '#FFFFFF')}40;
-                    }}
-                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"]:active {{
-                        transform: translateY(-2px) scale(0.998);
-                    }}
-                    div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"]:focus-visible {{
-                        outline: 3px solid {info.get('color', '#FFFFFF')};
-                        outline-offset: 2px;
-                    }}
-                    @media (prefers-reduced-motion: reduce) {{
-                        div[data-testid="column"]:nth-child({(i % 3) + 1}) button[kind="secondary"] {{
-                            transition: none !important;
-                        }}
-                    }}
-                </style>
-                """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
 
+@st.cache_data(show_spinner=False)
 def build_tool_index():
     """Build a comprehensive index of all available tools from all modules"""
-    if 'tool_index' not in st.session_state:
-        tool_index = {}
+    tool_index = {}
 
-        # List of all tool modules
-        tool_modules = [
-            'text_tools', 'image_tools', 'security_tools', 'css_tools', 'coding_tools',
-            'audio_video_tools', 'file_tools', 'ai_tools', 'social_media_tools',
-            'color_tools', 'web_dev_tools', 'seo_marketing_tools', 'data_tools',
-            'science_math_tools'
-        ]
+    # List of all tool modules
+    tool_modules = [
+        'text_tools', 'image_tools', 'security_tools', 'css_tools', 'coding_tools',
+        'audio_video_tools', 'file_tools', 'ai_tools', 'social_media_tools',
+        'color_tools', 'web_dev_tools', 'seo_marketing_tools', 'data_tools',
+        'science_math_tools'
+    ]
 
-        for module_name in tool_modules:
-            try:
-                # Import the module dynamically
-                module = importlib.import_module(f'tools.{module_name}')
+    for module_name in tool_modules:
+        try:
+            # Import the module dynamically
+            module = importlib.import_module(f'tools.{module_name}')
 
-                # Get the display_tools function to extract tool_categories
-                if hasattr(module, 'display_tools'):
-                    # Get the source code to extract tool_categories
-                    source = inspect.getsource(module.display_tools)
+            # Get the display_tools function to extract tool_categories
+            if hasattr(module, 'display_tools'):
+                # Get the source code to extract tool_categories
+                source = inspect.getsource(module.display_tools)
 
-                    # Extract tool_categories dictionary using regex
-                    import re
-                    pattern = r'tool_categories\s*=\s*\{([^}]+(?:\{[^}]*\}[^}]*)*)\}'
-                    match = re.search(pattern, source, re.DOTALL)
+                # Extract tool_categories dictionary using regex
+                import re
+                pattern = r'tool_categories\s*=\s*\{([^}]+(?:\{[^}]*\}[^}]*)*)\}'
+                match = re.search(pattern, source, re.DOTALL)
 
-                    if match:
-                        try:
-                            # Safely evaluate the dictionary
-                            categories_str = '{' + match.group(1) + '}'
-                            categories = eval(categories_str)
+                if match:
+                    try:
+                        # Safely evaluate the dictionary
+                        categories_str = '{' + match.group(1) + '}'
+                        categories = eval(categories_str)
 
-                            # Add tools to index
-                            category_name = module_name.replace('_', ' ').title()
-                            tool_index[category_name] = {
-                                'module': module_name,
-                                'categories': categories,
-                                'tools': []
-                            }
+                        # Add tools to index
+                        category_name = module_name.replace('_', ' ').title()
+                        tool_index[category_name] = {
+                            'module': module_name,
+                            'categories': categories,
+                            'tools': []
+                        }
 
-                            # Flatten all tools with their categories
-                            for subcategory, tools in categories.items():
-                                for tool in tools:
-                                    tool_index[category_name]['tools'].append({
-                                        'name': tool,
-                                        'subcategory': subcategory,
-                                        'module': module_name,
-                                        'main_category': category_name
-                                    })
+                        # Flatten all tools with their categories
+                        for subcategory, tools in categories.items():
+                            for tool in tools:
+                                tool_index[category_name]['tools'].append({
+                                    'name': tool,
+                                    'subcategory': subcategory,
+                                    'module': module_name,
+                                    'main_category': category_name
+                                })
 
-                        except Exception as e:
-                            st.error(f"Error parsing {module_name}: {e}")
+                    except Exception as e:
+                        pass  # Silently skip errors for faster loading
 
-            except ImportError:
-                continue
+        except ImportError:
+            continue
 
-        st.session_state.tool_index = tool_index
-
-    return st.session_state.tool_index
+    return tool_index
 
 
 def fuzzy_match_score(query: str, text: str) -> float:
