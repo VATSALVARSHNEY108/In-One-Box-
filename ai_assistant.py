@@ -29,7 +29,7 @@ def display_ai_assistant():
         st.session_state.ai_chat_messages = [
             {
                 "role": "assistant",
-                "content": "👋 **Hi! I'm Vatsal AI - Your Personal Toolkit Guide**\n\n*Powered by Google Gemini & created by Vatsal Varshney*\n\n**I'll help you find the perfect tool from our 500+ collection!**\n\nJust tell me what you need:\n- 🎨 \"I want to edit images\" → I'll show you Image Tools\n- 🤖 \"I need AI tools\" → I'll guide you to AI features\n- 📝 \"Help with text\" → I'll find Text Tools for you\n- 📊 \"Analyze data\" → I'll show Data Tools\n\n**💡 Try asking me anything below, or click a suggestion:**",
+                "content": "👋 **Hi! I'm Vatsal AI - Your Personal Toolkit Guide**\n\n* Created by Vatsal Varshney*\n\n**I'll help you find the perfect tool from our 500+ collection!**\n\nJust tell me what you need:\n- 🎨 \"I want to edit images\" → I'll show you Image Tools\n- 🤖 \"I need AI tools\" → I'll guide you to AI features\n- 📝 \"Help with text\" → I'll find Text Tools for you\n- 📊 \"Analyze data\" → I'll show Data Tools\n\n**💡 Try asking me anything below, or click a suggestion:**",
                 "suggestions": [
                     "Show me AI tools",
                     "I need to edit images",
@@ -252,3 +252,4 @@ def show_help_examples():
         "suggestions": examples
     })
     st.rerun()
+
